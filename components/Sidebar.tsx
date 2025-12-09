@@ -16,12 +16,12 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, currentPage, onNavigate, onLogout, user }) => {
     const menuItems = [
         { id: 'dashboard', label: 'Início', icon: Home },
+        { id: 'help', label: 'Como usar o App', icon: BookOpen },
         { id: 'lotteries', label: 'Loterias', icon: Ticket },
         { id: 'turbo', label: 'Sistema Turbo', icon: Zap },
         { id: 'autopilot', label: 'Autopiloto', icon: Bot },
         { id: 'vip', label: 'Clube VIP', icon: Crown },
         { id: 'history', label: 'Histórico', icon: History },
-        { id: 'help', label: 'Como usar o App', icon: BookOpen },
     ];
 
     return (

@@ -57,9 +57,11 @@ const TurboSystem: React.FC = () => {
         { day: getFutureDate(3), game: 'Lotofácil', score: '86.5%', status: 'pending' },
     ];
 
-    const history = [
-        { date: 'Ontem', game: 'Timemania', prob: '94.7%', result: 'Acertou 4 (Quadra)', prize: 'R$ 380' },
-        { date: 'Anteontem', game: 'Mega-Sena', prob: '91.2%', result: 'Acertou 5 (Quina)', prize: 'R$ 58.400' },
+    const recentWinners = [
+        { name: 'Carlos M.', game: 'Timemania', prize: 'R$ 380,00', time: 'Há 2h' },
+        { name: 'Roberto S.', game: 'Lotofácil', prize: 'R$ 1.250,00', time: 'Há 5h' },
+        { name: 'Fernanda P.', game: 'Mega-Sena', prize: 'R$ 950,00', time: 'Ontem' },
+        { name: 'João D.', game: 'Quina', prize: 'R$ 14.500,00', time: 'Ontem' },
     ];
 
     const handleCopy = () => {
@@ -286,9 +288,6 @@ const TurboSystem: React.FC = () => {
                                 <span className={`font-medium ${comp.name === todayGame.lottery ? 'text-gray-900 font-bold' : 'text-gray-500'}`}>
                                     {comp.name}
                                 </span>
-                                {comp.name === todayGame.lottery && (
-                                    <span className="bg-loto-primary/10 text-loto-primary text-[10px] font-bold px-2 py-0.5 rounded">RECOMENDADO</span>
-                                )}
                             </div>
                             <div className="flex items-center gap-4">
                                 <div className="flex gap-0.5">
@@ -346,23 +345,27 @@ const TurboSystem: React.FC = () => {
                     </div>
                 </div>
 
-                {/* HISTORY */}
+                {/* RECENT WINNERS (Updated) */}
                 <div className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm">
                     <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
                         <Trophy size={20} className="text-amber-500" />
-                        Histórico Recente
+                        Ganhadores Recentes
                     </h3>
                     <div className="space-y-3">
-                        {history.map((h, i) => (
-                            <div key={i} className="p-3 bg-green-50/50 rounded-xl border border-green-100">
-                                <div className="flex justify-between mb-1">
-                                    <span className="text-xs font-bold text-gray-500">{h.date} - {h.game}</span>
-                                    <span className="text-xs font-bold text-green-700 bg-white px-2 rounded shadow-sm">{h.prize}</span>
+                        {recentWinners.map((w, i) => (
+                            <div key={i} className="p-3 bg-green-50/50 rounded-xl border border-green-100 flex items-center justify-between hover:bg-green-100/50 transition-colors">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-green-700 font-bold text-xs shadow-sm border border-green-100">
+                                        {w.name.charAt(0)}
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-gray-900 leading-tight">{w.name}</p>
+                                        <p className="text-[10px] text-gray-500 font-medium">{w.game} • {w.time}</p>
+                                    </div>
                                 </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm font-medium text-gray-800">{h.result}</span>
-                                    <span className="text-xs text-gray-400">Prob: {h.prob}</span>
-                                </div>
+                                <span className="text-xs font-bold text-green-700 bg-white px-2 py-1 rounded-lg shadow-sm border border-green-100">
+                                    {w.prize}
+                                </span>
                             </div>
                         ))}
                     </div>

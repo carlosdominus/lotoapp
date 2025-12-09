@@ -4,7 +4,7 @@ import Dashboard from './pages/Dashboard';
 import LotteriesList from './pages/LotteriesList';
 import Sidebar from './components/Sidebar';
 import NotificationPanel from './components/NotificationPanel';
-import { Menu, Bell } from 'lucide-react';
+import { Menu, Bell, HelpCircle } from 'lucide-react';
 import { User, LotteryType, SavedBet } from './types';
 import LotteryDetail from './pages/LotteryDetail';
 import TurboSystem from './pages/TurboSystem';
@@ -177,7 +177,14 @@ const App: React.FC = () => {
                     >
                         <Bell size={22} />
                         {/* Bolinha vermelha de notificação */}
-                        <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+                        <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                    </button>
+
+                    <button 
+                        onClick={() => handleNavigate('help')}
+                        className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-600"
+                    >
+                        <HelpCircle size={22} />
                     </button>
 
                     <button 
