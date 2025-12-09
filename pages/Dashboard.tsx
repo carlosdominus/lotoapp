@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { LOTTERIES } from '../constants';
-import { ArrowRight, Star, Trophy, TrendingUp, Zap, Bot, Sparkles, Inbox, BookOpen } from 'lucide-react';
+import { ArrowRight, Star, Trophy, TrendingUp, Zap, Bot, Sparkles, Inbox, BookOpen, PlayCircle, X } from 'lucide-react';
 import { SavedBet } from '../types';
 
 interface DashboardProps {
@@ -30,6 +30,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate, history }) => {
     const recommended = { ...LOTTERIES['timemania'], prize: 'R$ 61 Milhões' };
     const [budget, setBudget] = useState<string>('');
     const [currentBanner, setCurrentBanner] = useState(0);
+    const [showTutorialPopup, setShowTutorialPopup] = useState(false);
 
     // Helpers Autopiloto
     const budgetVal = Number(budget);
@@ -52,8 +53,35 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate, history }) => {
         return () => clearInterval(timer);
     }, []);
 
+    // Check for first access popup
+    useEffect(() => {
+        const hasSeenTutorial = localStorage.getItem('has_seen_tutorial_popup');
+        if (!hasSeenTutorial) {
+            // Delay slighty for better UX
+            const timer = setTimeout(() => {
+                setShowTutorialPopup(true);
+            }, 1500);
+            return () => clearTimeout(timer);
+        }
+    }, []);
+
+    const handleScrollToTutorial = () => {
+        const element = document.getElementById('tutorial-video');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            localStorage.setItem('has_seen_tutorial_popup', 'true');
+            setShowTutorialPopup(false);
+        }
+    };
+
+    const handleDismissTutorial = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevent triggering the scroll
+        localStorage.setItem('has_seen_tutorial_popup', 'true');
+        setShowTutorialPopup(false);
+    };
+
     return (
-        <div className="space-y-8 animate-in fade-in duration-500 pb-20">
+        <div className="space-y-8 animate-in fade-in duration-500 pb-20 relative">
             {/* 1. Header */}
             <div className="flex flex-col gap-1">
                 <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Olá, {user.name.split(' ')[0]}! 👋</h1>
@@ -309,7 +337,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate, history }) => {
             </div>
 
             {/* 7. Tutorial Video */}
-            <div className="bg-white rounded-[32px] p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100">
+            <div id="tutorial-video" className="bg-white rounded-[32px] p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="font-bold text-gray-900 flex items-center gap-2 text-lg">
                         <BookOpen size={22} className="text-blue-500" />
@@ -331,6 +359,25 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate, history }) => {
                     </div>
                 </div>
             </div>
+
+            {/* Tutorial Popup - First Access Only */}
+            {showTutorialPopup && (
+                <div className="fixed bottom-4 left-4 z-40 animate-bounce">
+                    <div 
+                        onClick={handleScrollToTutorial}
+                        className="bg-gray-900 text-white px-4 py-2.5 rounded-full shadow-xl flex items-center gap-2 cursor-pointer hover:bg-gray-800 transition-all border border-gray-700/50"
+                    >
+                        <PlayCircle size={16} className="text-loto-secondary" />
+                        <span className="font-bold text-xs pr-1">Aprenda a gerar jogos</span>
+                        <button 
+                            onClick={handleDismissTutorial}
+                            className="p-1 text-gray-500 hover:text-white rounded-full hover:bg-white/10 transition-colors"
+                        >
+                            <X size={12} />
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
