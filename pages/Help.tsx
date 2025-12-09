@@ -16,11 +16,11 @@ const Help: React.FC = () => {
             </div>
 
             {/* Video Container */}
-            <div className="bg-white rounded-[32px] p-4 md:p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden max-w-sm mx-auto">
-                <div style={{position: 'relative', paddingTop: '216.4814814814815%'}} className="rounded-2xl overflow-hidden bg-gray-100 shadow-inner">
+            <div className="bg-white rounded-[32px] p-4 md:p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden max-w-md mx-auto">
+                <div style={{position: 'relative', paddingTop: '216.52777777777777%'}} className="rounded-2xl overflow-hidden bg-gray-100 shadow-inner">
                     <iframe 
-                        id="panda-4f5af67d-2118-4ee1-b758-ef5d49b55327" 
-                        src="https://player-vz-30ca375c-0dd.tv.pandavideo.com.br/embed/?v=4f5af67d-2118-4ee1-b758-ef5d49b55327" 
+                        id="panda-35c91f8c-5ffa-41e4-a188-001ea8bac3e7" 
+                        src="https://player-vz-30ca375c-0dd.tv.pandavideo.com.br/embed/?v=35c91f8c-5ffa-41e4-a188-001ea8bac3e7" 
                         style={{border: 'none', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}} 
                         allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" 
                         allowFullScreen={true}

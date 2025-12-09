@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { LOTTERIES } from '../constants';
-import { ArrowRight, Star, Trophy, TrendingUp, Zap, Bot, Sparkles, Inbox } from 'lucide-react';
+import { ArrowRight, Star, Trophy, TrendingUp, Zap, Bot, Sparkles, Inbox, BookOpen } from 'lucide-react';
 import { SavedBet } from '../types';
 
 interface DashboardProps {
@@ -305,6 +306,30 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate, history }) => {
                         <p className="text-gray-400 font-medium text-sm">você não gerou jogos recentemente</p>
                     </div>
                 )}
+            </div>
+
+            {/* 7. Tutorial Video */}
+            <div className="bg-white rounded-[32px] p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="font-bold text-gray-900 flex items-center gap-2 text-lg">
+                        <BookOpen size={22} className="text-blue-500" />
+                        Como usar o App
+                    </h3>
+                </div>
+                
+                <div className="rounded-2xl overflow-hidden bg-gray-100 shadow-inner max-w-sm mx-auto">
+                    <div style={{position: 'relative', paddingTop: '216.52777777777777%'}}>
+                        <iframe 
+                            id="panda-35c91f8c-5ffa-41e4-a188-001ea8bac3e7-dash" 
+                            src="https://player-vz-30ca375c-0dd.tv.pandavideo.com.br/embed/?v=35c91f8c-5ffa-41e4-a188-001ea8bac3e7" 
+                            style={{border: 'none', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}} 
+                            allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" 
+                            allowFullScreen={true}
+                            // @ts-ignore
+                            fetchPriority="high"
+                        ></iframe>
+                    </div>
+                </div>
             </div>
         </div>
     );
