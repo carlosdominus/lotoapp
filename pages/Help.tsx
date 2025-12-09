@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BookOpen, MessageCircle, HelpCircle } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 
 const Help: React.FC = () => {
     return (
@@ -27,28 +27,6 @@ const Help: React.FC = () => {
                         // @ts-ignore
                         fetchPriority="high"
                     ></iframe>
-                </div>
-            </div>
-
-            {/* Support Section */}
-            <div className="bg-orange-50 rounded-[32px] p-6 border border-orange-100 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-                <div className="p-4 bg-white rounded-full shadow-sm text-orange-500 shrink-0">
-                    <HelpCircle size={32} />
-                </div>
-                <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Ainda com dúvidas?</h3>
-                    <p className="text-gray-600 mb-4 font-medium">
-                        Nos chame no <span className="font-bold text-orange-600 bg-orange-100 px-1 rounded">círculo laranja</span> para suporte ou se preferir no nosso WhatsApp.
-                    </p>
-                    <a 
-                        href="https://wa.me/15557934518" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 bg-[#25D366] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#20bd5a] transition-colors shadow-lg shadow-green-500/20 active:scale-95"
-                    >
-                        <MessageCircle size={20} />
-                        Chamar no WhatsApp
-                    </a>
                 </div>
             </div>
         </div>

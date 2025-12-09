@@ -113,7 +113,7 @@ const App: React.FC = () => {
   const renderContent = () => {
       switch(currentPage) {
           case 'dashboard':
-              return <Dashboard user={user} onNavigate={handleNavigate} />;
+              return <Dashboard user={user} onNavigate={handleNavigate} history={history} />;
           case 'lotteries':
               if (currentLotteryId) {
                   return <LotteryDetail 
@@ -134,7 +134,7 @@ const App: React.FC = () => {
           case 'help':
               return <Help />;
           default:
-              return <Dashboard user={user} onNavigate={handleNavigate} />;
+              return <Dashboard user={user} onNavigate={handleNavigate} history={history} />;
       }
   };
 
@@ -154,8 +154,12 @@ const App: React.FC = () => {
             onClose={() => setIsNotificationsOpen(false)}
         />
 
-        <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
-            <header className="bg-white/80 backdrop-blur-xl border-b border-gray-100 p-4 flex items-center justify-between sticky top-0 z-30 lg:hidden">
+        {/* 
+            Changed h-screen to h-[100dvh] for better mobile support.
+            Header is now fixed on mobile, and main has top padding.
+        */}
+        <div className="flex-1 flex flex-col h-[100dvh] overflow-hidden relative">
+            <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-b border-gray-100 p-4 flex items-center justify-between z-30 lg:hidden h-[72px]">
                 <div className="flex items-center gap-3">
                     <button onClick={() => setIsSidebarOpen(true)} className="p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
                         <Menu size={24} />
@@ -176,7 +180,6 @@ const App: React.FC = () => {
                         className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-600"
                     >
                         <Bell size={22} />
-                        {/* Bolinha vermelha de notificação */}
                         <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
                     </button>
 
@@ -196,7 +199,8 @@ const App: React.FC = () => {
                 </div>
             </header>
 
-            <main ref={scrollContainerRef} className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
+            {/* Added pt-[72px] for mobile to account for fixed header */}
+            <main ref={scrollContainerRef} className="flex-1 overflow-y-auto no-scrollbar scroll-smooth pt-[72px] lg:pt-0">
                 <div className="max-w-3xl mx-auto w-full p-6 md:p-8 lg:p-10">
                     {renderContent()}
                 </div>

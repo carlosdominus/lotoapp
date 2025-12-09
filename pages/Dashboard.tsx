@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { LOTTERIES, ASSETS, MOCK_HISTORY } from '../constants';
-import { ArrowRight, Star, Trophy, TrendingUp, Zap, Bot, Sparkles } from 'lucide-react';
+import { LOTTERIES } from '../constants';
+import { ArrowRight, Star, Trophy, TrendingUp, Zap, Bot, Sparkles, Inbox } from 'lucide-react';
+import { SavedBet } from '../types';
 
 interface DashboardProps {
     user: { name: string };
     onNavigate: (page: string, params?: any) => void;
+    history: SavedBet[];
 }
 
 const BANNERS = [
@@ -22,7 +24,7 @@ const BANNERS = [
     }
 ];
 
-const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate }) => {
+const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate, history }) => {
     // Recommendation updated to Timemania as requested
     const recommended = { ...LOTTERIES['timemania'], prize: 'R$ 61 Milhões' };
     const [budget, setBudget] = useState<string>('');
@@ -271,28 +273,38 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate }) => {
                     <button onClick={() => onNavigate('history')} className="text-sm font-semibold text-loto-primary hover:opacity-80">Ver tudo →</button>
                 </div>
                 
-                <div className="space-y-4">
-                    {MOCK_HISTORY.map((game: any) => (
-                        <div key={game.id} onClick={() => onNavigate('history')} className="group hover:bg-gray-50 p-4 rounded-2xl transition-colors -mx-4 cursor-pointer border border-transparent hover:border-gray-100">
-                            <div className="flex justify-between mb-3 items-center">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: LOTTERIES[game.lotteryId]?.color || '#999' }}></div>
-                                    <span className="font-bold text-gray-800">{LOTTERIES[game.lotteryId]?.name}</span>
-                                </div>
-                                <span className={`text-xs font-bold px-2 py-1 rounded-full ${game.status === 'Premiado' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
-                                    {game.status}
-                                </span>
-                            </div>
-                            <div className="flex gap-2 flex-wrap">
-                                {game.numbers.map((n: number) => (
-                                    <span key={n} className="w-8 h-8 bg-gray-100 group-hover:bg-white group-hover:shadow-sm rounded-full flex items-center justify-center text-xs font-bold text-gray-700 border border-transparent group-hover:border-gray-200 transition-all">
-                                        {n}
+                {history.length > 0 ? (
+                    <div className="space-y-4">
+                        {/* Display only last 3 items */}
+                        {history.slice(0, 3).map((game) => (
+                            <div key={game.id} onClick={() => onNavigate('history')} className="group hover:bg-gray-50 p-4 rounded-2xl transition-colors -mx-4 cursor-pointer border border-transparent hover:border-gray-100">
+                                <div className="flex justify-between mb-3 items-center">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: LOTTERIES[game.lotteryId]?.color || '#999' }}></div>
+                                        <span className="font-bold text-gray-800">{LOTTERIES[game.lotteryId]?.name}</span>
+                                    </div>
+                                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${game.status === 'Premiado' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
+                                        {game.status}
                                     </span>
-                                ))}
+                                </div>
+                                <div className="flex gap-2 flex-wrap">
+                                    {game.numbers.map((n: number) => (
+                                        <span key={n} className="w-8 h-8 bg-gray-100 group-hover:bg-white group-hover:shadow-sm rounded-full flex items-center justify-center text-xs font-bold text-gray-700 border border-transparent group-hover:border-gray-200 transition-all">
+                                            {n}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center justify-center py-8 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                        <div className="p-3 bg-white rounded-full shadow-sm mb-3">
+                            <Inbox size={24} className="text-gray-300" />
                         </div>
-                    ))}
-                </div>
+                        <p className="text-gray-400 font-medium text-sm">você não gerou jogos recentemente</p>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -126,11 +126,6 @@ export const LOTTERIES: Record<string, LotteryConfig> = {
   }
 };
 
-export const MOCK_HISTORY = [
-  { id: 1, lotteryId: 'mega-sena', numbers: [3, 8, 15, 22, 45, 58], date: '05/01/2025', status: 'Aguardando', concurso: '2779' },
-  { id: 2, lotteryId: 'lotofacil', numbers: [1, 2, 3, 5, 7, 9, 11, 13, 14, 15, 18, 20, 22, 24, 25], date: '03/01/2025', status: 'Premiado', hits: 11, concurso: '3245' },
-];
-
 export const ASSETS = {
   logo: 'https://i.ibb.co/tTFpcS2V/logo-lotoapp.webp',
   bgLogin: 'https://i.ibb.co/KxPHJSFg/TREVO-DE-QUATRO-FOLHAS-produtor-garden.webp',
