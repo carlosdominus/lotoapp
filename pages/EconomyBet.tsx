@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { DollarSign, Wallet, TrendingDown, AlertTriangle, ShieldCheck, PieChart, ArrowRight, History as HistoryIcon, Calculator } from 'lucide-react';
+import { DollarSign, Wallet, TrendingDown, AlertTriangle, ShieldCheck, PieChart, ArrowRight, History as HistoryIcon, Calculator, Edit2 } from 'lucide-react';
 import { SavedBet } from '../types';
 
 interface EconomyBetProps {
@@ -23,9 +23,17 @@ const PRICE_TABLE: Record<string, number> = {
 };
 
 const EconomyBet: React.FC<EconomyBetProps> = ({ history }) => {
-    const [income, setIncome] = useState<number>(0);
-    const [expenses, setExpenses] = useState<number>(0);
+    // Inicializar estados a partir do localStorage
+    const [income, setIncome] = useState<number>(() => {
+        const saved = localStorage.getItem('economy_income');
+        return saved ? Number(saved) : 0;
+    });
+    const [expenses, setExpenses] = useState<number>(() => {
+        const saved = localStorage.getItem('economy_expenses');
+        return saved ? Number(saved) : 0;
+    });
     const [totalSpentInHistory, setTotalSpentInHistory] = useState<number>(0);
+    const [isEditing, setIsEditing] = useState<boolean>(!(income > 0 || expenses > 0));
 
     useEffect(() => {
         // Calcular gasto total baseado no histórico
@@ -35,6 +43,15 @@ const EconomyBet: React.FC<EconomyBetProps> = ({ history }) => {
         }, 0);
         setTotalSpentInHistory(total);
     }, [history]);
+
+    // Persistir dados quando mudarem
+    useEffect(() => {
+        localStorage.setItem('economy_income', income.toString());
+    }, [income]);
+
+    useEffect(() => {
+        localStorage.setItem('economy_expenses', expenses.toString());
+    }, [expenses]);
 
     const surplus = income - expenses;
     const limit = surplus > 0 ? surplus * 0.2 : 0;
@@ -55,39 +72,70 @@ const EconomyBet: React.FC<EconomyBetProps> = ({ history }) => {
 
             {/* Calculadora de Orçamento */}
             <div className="bg-white rounded-[32px] p-6 md:p-8 shadow-sm border border-gray-100">
-                <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                    <Wallet size={20} className="text-emerald-600" />
-                    Sua Realidade Financeira
-                </h2>
-
-                <div className="grid md:grid-cols-2 gap-6 mb-8">
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Renda Mensal (R$)</label>
-                        <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">R$</span>
-                            <input 
-                                type="number" 
-                                value={income || ''} 
-                                onChange={(e) => setIncome(Number(e.target.value))}
-                                className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 pl-12 pr-4 font-bold text-gray-900 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
-                                placeholder="0,00"
-                            />
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Total de Despesas (R$)</label>
-                        <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">R$</span>
-                            <input 
-                                type="number" 
-                                value={expenses || ''} 
-                                onChange={(e) => setExpenses(Number(e.target.value))}
-                                className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 pl-12 pr-4 font-bold text-gray-900 focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
-                                placeholder="0,00"
-                            />
-                        </div>
-                    </div>
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <Wallet size={20} className="text-emerald-600" />
+                        Sua Realidade Financeira
+                    </h2>
+                    {!isEditing && (income > 0 || expenses > 0) && (
+                        <button 
+                            onClick={() => setIsEditing(true)}
+                            className="text-xs font-bold text-loto-primary flex items-center gap-1 hover:underline"
+                        >
+                            <Edit2 size={12} /> Alterar dados
+                        </button>
+                    )}
                 </div>
+
+                {isEditing ? (
+                    <div className="grid md:grid-cols-2 gap-6 mb-8 animate-in fade-in zoom-in-95 duration-300">
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Renda Mensal (R$)</label>
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">R$</span>
+                                <input 
+                                    type="number" 
+                                    value={income || ''} 
+                                    onChange={(e) => setIncome(Number(e.target.value))}
+                                    className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 pl-12 pr-4 font-bold text-gray-900 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
+                                    placeholder="0,00"
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Total de Despesas (R$)</label>
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">R$</span>
+                                <input 
+                                    type="number" 
+                                    value={expenses || ''} 
+                                    onChange={(e) => setExpenses(Number(e.target.value))}
+                                    className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 pl-12 pr-4 font-bold text-gray-900 focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
+                                    placeholder="0,00"
+                                />
+                            </div>
+                        </div>
+                        <div className="md:col-span-2">
+                            <button 
+                                onClick={() => setIsEditing(false)}
+                                className="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/10 active:scale-95"
+                            >
+                                SALVAR E ANALISAR
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 gap-4 mb-8 p-4 bg-gray-50 rounded-2xl border border-gray-100 animate-in fade-in slide-in-from-top-2">
+                        <div>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase">Renda</p>
+                            <p className="font-bold text-gray-900">R$ {income.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase">Despesas</p>
+                            <p className="font-bold text-gray-900">R$ {expenses.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                        </div>
+                    </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
