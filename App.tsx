@@ -1,18 +1,20 @@
+
 import React, { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import LotteriesList from './pages/LotteriesList';
 import Sidebar from './components/Sidebar';
 import NotificationPanel from './components/NotificationPanel';
-import { Menu, Bell, HelpCircle } from 'lucide-react';
-import { User, LotteryType, SavedBet } from './types';
+import { Menu, Bell, HelpCircle, ArrowLeft } from 'lucide-react';
+import { User, LotteryType, SavedBet, LotteryConfig } from './types';
 import LotteryDetail from './pages/LotteryDetail';
 import TurboSystem from './pages/TurboSystem';
 import VipClub from './pages/VipClub';
 import History from './pages/History';
 import Autopilot from './pages/Autopilot';
+import EconomyBet from './pages/EconomyBet';
 import Help from './pages/Help';
-import { ASSETS } from './constants';
+import { ASSETS, LOTTERIES } from './constants';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -21,35 +23,55 @@ const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [currentLotteryId, setCurrentLotteryId] = useState<LotteryType | null>(null);
   const [history, setHistory] = useState<SavedBet[]>([]);
+  
+  // Estados para dados dinâmicos da API
+  const [dynamicNotifications, setDynamicNotifications] = useState<any[]>([]);
+  const [dynamicLotteries, setDynamicLotteries] = useState<Record<string, Partial<LotteryConfig>>>({});
+  const [turboData, setTurboData] = useState<any>(null);
+
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('loto_user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
+    if (savedUser) setUser(JSON.parse(savedUser));
     
     const savedHistory = localStorage.getItem('loto_history');
     if (savedHistory) {
-        try {
-            setHistory(JSON.parse(savedHistory));
-        } catch (e) {
-            console.error("Error parsing history", e);
-            setHistory([]);
-        }
+        try { setHistory(JSON.parse(savedHistory)); } catch (e) { setHistory([]); }
     }
+
+    // Busca centralizada de todos os endpoints JSON
+    const fetchAllDynamicData = async () => {
+        try {
+            // 1. Notificações
+            fetch('/notifications.json').then(r => r.ok && r.json().then(setDynamicNotifications)).catch(() => {});
+            
+            // 2. Prêmios e Datas das Loterias
+            fetch('/lotteries_data.json').then(r => r.ok && r.json().then(setDynamicLotteries)).catch(() => {});
+            
+            // 3. Sistema Turbo
+            fetch('/turbo_data.json').then(r => r.ok && r.json().then(setTurboData)).catch(() => {});
+            
+        } catch (error) {
+            console.log("Remote data not configured yet.");
+        }
+    };
+    fetchAllDynamicData();
   }, []);
 
   useEffect(() => {
-      if (scrollContainerRef.current) {
-          scrollContainerRef.current.scrollTo(0, 0);
-      }
+      if (scrollContainerRef.current) scrollContainerRef.current.scrollTo(0, 0);
   }, [currentPage, currentLotteryId]);
 
-  const handleLogin = (newUser: User) => {
-    setUser(newUser);
+  // Função para obter o config da loteria mesclando o fixo com o dinâmico
+  const getLotteryConfig = (id: string): LotteryConfig => {
+      const base = LOTTERIES[id];
+      const dynamic = dynamicLotteries[id];
+      if (id === 'mega-virada') return base; // Mega da Virada é fixa como solicitado
+      return dynamic ? { ...base, ...dynamic } : base;
   };
 
+  const handleLogin = (newUser: User) => setUser(newUser);
   const handleLogout = () => {
     localStorage.removeItem('loto_user');
     setUser(null);
@@ -74,10 +96,8 @@ const App: React.FC = () => {
         concurso: 'Próximo',
         source: 'manual'
     };
-    
-    // Usar functional update para garantir estado fresco
-    setHistory(prevHistory => {
-        const updated = [newBet, ...prevHistory];
+    setHistory(prev => {
+        const updated = [newBet, ...prev];
         localStorage.setItem('loto_history', JSON.stringify(updated));
         return updated;
     });
@@ -93,48 +113,30 @@ const App: React.FC = () => {
         concurso: 'Próximo',
         source: 'autopilot'
     }));
-    
-    setHistory(prevHistory => {
-        const updated = [...newBets, ...prevHistory];
+    setHistory(prev => {
+        const updated = [...newBets, ...prev];
         localStorage.setItem('loto_history', JSON.stringify(updated));
         return updated;
     });
   };
 
-  const handleClearHistory = () => {
-      setHistory([]);
-      localStorage.removeItem('loto_history');
-  };
-
-  if (!user) {
-    return <Login onLogin={handleLogin} />;
-  }
+  if (!user) return <Login onLogin={handleLogin} />;
 
   const renderContent = () => {
       switch(currentPage) {
-          case 'dashboard':
-              return <Dashboard user={user} onNavigate={handleNavigate} history={history} />;
+          case 'dashboard': return <Dashboard user={user} onNavigate={handleNavigate} history={history} />;
           case 'lotteries':
               if (currentLotteryId) {
-                  return <LotteryDetail 
-                    lotteryId={currentLotteryId} 
-                    onBack={() => setCurrentLotteryId(null)} 
-                    onSave={handleSaveBet}
-                  />;
+                  return <LotteryDetail lotteryId={currentLotteryId} onBack={() => setCurrentLotteryId(null)} onSave={handleSaveBet} />;
               }
-              return <LotteriesList onNavigate={handleNavigate} />;
-          case 'turbo':
-              return <TurboSystem />;
-          case 'autopilot':
-              return <Autopilot onSaveBatch={handleSaveBatchBets} />;
-          case 'vip':
-              return <VipClub />;
-          case 'history':
-              return <History history={history} onClear={handleClearHistory} />;
-          case 'help':
-              return <Help />;
-          default:
-              return <Dashboard user={user} onNavigate={handleNavigate} history={history} />;
+              return <LotteriesList onNavigate={handleNavigate} dynamicLotteries={dynamicLotteries} />;
+          case 'turbo': return <TurboSystem data={turboData} />;
+          case 'autopilot': return <Autopilot onSaveBatch={handleSaveBatchBets} />;
+          case 'economy': return <EconomyBet history={history} />;
+          case 'vip': return <VipClub />;
+          case 'history': return <History history={history} onClear={() => setHistory([])} />;
+          case 'help': return <Help />;
+          default: return <Dashboard user={user} onNavigate={handleNavigate} history={history} />;
       }
   };
 
@@ -152,56 +154,43 @@ const App: React.FC = () => {
         <NotificationPanel 
             isOpen={isNotificationsOpen}
             onClose={() => setIsNotificationsOpen(false)}
+            dynamicNotifications={dynamicNotifications}
         />
 
-        {/* 
-            Changed h-screen to h-[100dvh] for better mobile support.
-            Header is now fixed on mobile, and main has top padding.
-        */}
         <div className="flex-1 flex flex-col h-[100dvh] overflow-hidden relative">
             <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-b border-gray-100 p-4 flex items-center justify-between z-30 lg:hidden h-[72px]">
                 <div className="flex items-center gap-3">
                     <button onClick={() => setIsSidebarOpen(true)} className="p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
                         <Menu size={24} />
                     </button>
-                    
-                    <div 
-                        className="flex items-center gap-2 cursor-pointer"
-                        onClick={() => handleNavigate('dashboard')}
-                    >
+                    <div className="flex items-center gap-2 cursor-pointer" onClick={() => handleNavigate('dashboard')}>
                         <img src={ASSETS.logo} alt="Loto APP" className="w-8 h-8 object-contain" />
-                        <span className="font-bold text-loto-primary tracking-tight text-lg hidden min-[360px]:inline">Loto APP</span>
+                        <span className="font-bold text-loto-primary tracking-tight text-lg">Loto APP</span>
                     </div>
                 </div>
-
                 <div className="flex items-center gap-3">
-                    <button 
-                        onClick={() => setIsNotificationsOpen(true)}
-                        className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-600"
-                    >
+                    <button onClick={() => setIsNotificationsOpen(true)} className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600">
                         <Bell size={22} />
-                        <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                        {/* BOLINHA VERMELHA PISCANTE PERMANENTE */}
+                        <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse shadow-sm"></span>
                     </button>
-
-                    <button 
-                        onClick={() => handleNavigate('help')}
-                        className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-600"
-                    >
+                    <button onClick={() => handleNavigate('help')} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600">
                         <HelpCircle size={22} />
-                    </button>
-
-                    <button 
-                        onClick={() => setIsSidebarOpen(true)}
-                        className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-200 flex items-center justify-center text-xs font-bold text-gray-600 shadow-sm active:scale-95 transition-transform"
-                    >
-                        {user.name.charAt(0)}
                     </button>
                 </div>
             </header>
 
-            {/* Added pt-[72px] for mobile to account for fixed header */}
-            <main ref={scrollContainerRef} className="flex-1 overflow-y-auto no-scrollbar scroll-smooth pt-[72px] lg:pt-0">
+            <main ref={scrollContainerRef} className="flex-1 overflow-y-auto no-scrollbar pt-[72px] lg:pt-0">
                 <div className="max-w-3xl mx-auto w-full p-6 md:p-8 lg:p-10">
+                    {currentPage !== 'dashboard' && !currentLotteryId && (
+                        <button 
+                            onClick={() => handleNavigate('dashboard')}
+                            className="flex items-center gap-2 text-gray-500 hover:text-loto-primary font-bold mb-6 transition-colors active:scale-95 bg-white/50 px-4 py-2 rounded-xl border border-gray-100 shadow-sm w-fit"
+                        >
+                            <ArrowLeft size={18} />
+                            Voltar ao Início
+                        </button>
+                    )}
                     {renderContent()}
                 </div>
             </main>

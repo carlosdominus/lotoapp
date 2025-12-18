@@ -1,8 +1,10 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
 import { LotteryType } from '../types';
 import { LOTTERIES } from '../constants';
 
 const getAiClient = () => {
+    // API key must be obtained exclusively from process.env.API_KEY
     const apiKey = process.env.API_KEY;
     if (!apiKey) return null;
     return new GoogleGenAI({ apiKey });
@@ -121,18 +123,20 @@ export const generateCombination = async (lotteryId: LotteryType): Promise<{
         }
         `;
 
+        // Use gemini-3-flash-preview as the default for basic text tasks
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-flash-preview',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
             }
         });
 
+        // Use .text property instead of .text() method
         const text = response.text;
         if (!text) throw new Error("Empty response");
         
-        // Limpeza agressiva do JSON
+        // Ensure clean JSON string if model adds markdown wrappers
         const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
         return JSON.parse(cleanText);
 
@@ -152,10 +156,13 @@ export const analyzeTrend = async (lotteryId: LotteryType): Promise<string> => {
             Cite se a tendência é para pares, ímpares ou zonas específicas. Use emojis.
         `;
         
+        // Use gemini-3-flash-preview as the default for basic text tasks
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-flash-preview',
             contents: prompt,
         });
+        
+        // Use .text property instead of .text() method
         return response.text || "Análise indisponível.";
     } catch (error) {
         return `${LOTTERIES[lotteryId].name}: Tendência de equilíbrio estatístico detectada. 🍀`;

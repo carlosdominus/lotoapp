@@ -1,3 +1,4 @@
+
 export type LotteryType = 
   | 'mega-sena' 
   | 'lotofacil' 
@@ -9,7 +10,8 @@ export type LotteryType =
   | 'super-sete' 
   | 'federal' 
   | 'loteca' 
-  | 'mais-milionaria';
+  | 'mais-milionaria'
+  | 'mega-virada';
 
 export interface User {
   name: string;

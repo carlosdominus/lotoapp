@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
@@ -20,6 +21,15 @@
                 alert: '#F68325',
                 dark: '#121212',
                 light: '#f8fafc'
+              }
+            },
+            animation: {
+              'small-bounce': 'small-bounce 2s infinite',
+            },
+            keyframes: {
+              'small-bounce': {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-6px)' },
               }
             }
           }
