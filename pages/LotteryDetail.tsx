@@ -1,23 +1,23 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { LotteryType } from '../types';
+import { LotteryType, LotteryConfig } from '../types';
 import { LOTTERIES } from '../constants';
 import { generateCombination, analyzeTrend } from '../services/geminiService';
-import { ArrowLeft, Sparkles, Brain, Copy, Loader2, BarChart2, CheckCircle2, Repeat } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, CartesianGrid } from 'recharts';
+import { ArrowLeft, Sparkles, Brain, Copy, Loader2, CheckCircle2 } from 'lucide-react';
 
 interface LotteryDetailProps {
     lotteryId: LotteryType;
+    dynamicConfig?: LotteryConfig; // Recebe a config já mesclada
     onBack: () => void;
     onSave: (lotteryId: LotteryType, numbers: number[]) => void;
 }
 
-const LotteryDetail: React.FC<LotteryDetailProps> = ({ lotteryId, onBack, onSave }) => {
-    const config = LOTTERIES[lotteryId];
+const LotteryDetail: React.FC<LotteryDetailProps> = ({ lotteryId, dynamicConfig, onBack, onSave }) => {
+    // Usa a config dinâmica se disponível, senão a estática
+    const config = dynamicConfig || LOTTERIES[lotteryId];
     const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
     const justificationRef = useRef<HTMLDivElement>(null);
     
-    // ABA PADRÃO AGORA É GENERATOR COMO SOLICITADO
     const [activeTab, setActiveTab] = useState<'analysis' | 'generator'>('generator');
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedData, setGeneratedData] = useState<any>(null);
@@ -26,41 +26,11 @@ const LotteryDetail: React.FC<LotteryDetailProps> = ({ lotteryId, onBack, onSave
     const [isSaved, setIsSaved] = useState(false);
     const [autoSavedMessage, setAutoSavedMessage] = useState(false);
 
-    const [hotNumbers, setHotNumbers] = useState<number[]>([]);
-    const [coldNumbers, setColdNumbers] = useState<number[]>([]);
-    const [repeatedNumbers, setRepeatedNumbers] = useState<number[]>([]);
-    const [frequencyData, setFrequencyData] = useState<{name: string, value: number}[]>([]);
-
     useEffect(() => {
         const init = async () => {
             setLoadingAnalysis(true);
             const trend = await analyzeTrend(lotteryId);
             setTrendAnalysis(trend);
-            
-            if (config.layout === 'simple' || config.layout === 'double') {
-                const max = config.numeros?.max || 50;
-                const min = config.numeros?.min || 1;
-                const pool = Array.from({length: max - min + 1}, (_, i) => i + min);
-                
-                const shuffled = [...pool].sort(() => Math.random() - 0.5);
-                setHotNumbers(shuffled.slice(0, 8));
-                setColdNumbers(shuffled.slice(8, 16));
-                setRepeatedNumbers(shuffled.slice(16, 20).sort((a,b) => a - b));
-
-                const ranges = 5;
-                const step = Math.ceil((max - min + 1) / ranges);
-                const freq = [];
-                for(let i=0; i<ranges; i++) {
-                    const start = min + (i * step);
-                    const end = Math.min(max, start + step - 1);
-                    freq.push({
-                        name: `${start}-${end}`,
-                        value: Math.floor(Math.random() * 50) + 20
-                    });
-                }
-                setFrequencyData(freq);
-            }
-            
             setLoadingAnalysis(false);
             setSelectedNumbers([]);
             setGeneratedData(null);
@@ -146,7 +116,6 @@ const LotteryDetail: React.FC<LotteryDetailProps> = ({ lotteryId, onBack, onSave
         if (config.layout === 'double') toSave = selectedNumbers.map(n => Math.abs(n));
         const textToCopy = `${config.name}: ${toSave.join(', ')}`;
         navigator.clipboard.writeText(textToCopy);
-        // O histórico é salvo apenas via IA como solicitado
         setIsSaved(true);
         setTimeout(() => setIsSaved(false), 3000);
     };
@@ -160,9 +129,6 @@ const LotteryDetail: React.FC<LotteryDetailProps> = ({ lotteryId, onBack, onSave
         }
         return false;
     };
-
-    const countOdds = () => (config.layout === 'double' ? selectedNumbers.filter(n => n > 0 && n % 2 !== 0).length : selectedNumbers.filter(n => n % 2 !== 0).length);
-    const countEvens = () => (config.layout === 'double' ? selectedNumbers.filter(n => n > 0 && n % 2 === 0).length : selectedNumbers.filter(n => n % 2 === 0).length);
 
     const renderSimpleGrid = () => {
         const { min, max } = config.numeros!;
@@ -230,7 +196,11 @@ const LotteryDetail: React.FC<LotteryDetailProps> = ({ lotteryId, onBack, onSave
                         <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
                             <Sparkles size={20} className="text-purple-500" /> Tendências
                         </h3>
-                        <p className="text-sm text-gray-600 font-medium">{trendAnalysis}</p>
+                        {loadingAnalysis ? (
+                            <div className="flex justify-center py-4"><Loader2 className="animate-spin text-gray-300" /></div>
+                        ) : (
+                            <p className="text-sm text-gray-600 font-medium">{trendAnalysis}</p>
+                        )}
                     </div>
                 </div>
             ) : (

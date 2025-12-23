@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -41,20 +40,28 @@ const App: React.FC = () => {
         try { setHistory(JSON.parse(savedHistory)); } catch (e) { setHistory([]); }
     }
 
-    // Busca centralizada de todos os endpoints JSON
     const fetchAllDynamicData = async () => {
         try {
             // 1. Notificações
-            fetch('/notifications.json').then(r => r.ok && r.json().then(setDynamicNotifications)).catch(() => {});
+            fetch('api.php?endpoint=notifications')
+                .then(r => r.ok ? r.json() : null)
+                .then(data => data && setDynamicNotifications(data))
+                .catch(() => {});
             
             // 2. Prêmios e Datas das Loterias
-            fetch('/lotteries_data.json').then(r => r.ok && r.json().then(setDynamicLotteries)).catch(() => {});
+            fetch('api.php?endpoint=lotteries')
+                .then(r => r.ok ? r.json() : null)
+                .then(data => data && setDynamicLotteries(data))
+                .catch(() => {});
             
             // 3. Sistema Turbo
-            fetch('/turbo_data.json').then(r => r.ok && r.json().then(setTurboData)).catch(() => {});
+            fetch('api.php?endpoint=turbo')
+                .then(r => r.ok ? r.json() : null)
+                .then(data => data && setTurboData(data))
+                .catch(() => {});
             
         } catch (error) {
-            console.log("Remote data not configured yet.");
+            console.log("Remote API integration error.");
         }
     };
     fetchAllDynamicData();
@@ -64,12 +71,11 @@ const App: React.FC = () => {
       if (scrollContainerRef.current) scrollContainerRef.current.scrollTo(0, 0);
   }, [currentPage, currentLotteryId]);
 
-  // Função para obter o config da loteria mesclando o fixo com o dinâmico
   const getLotteryConfig = (id: string): LotteryConfig => {
       const base = LOTTERIES[id];
       const dynamic = dynamicLotteries[id];
-      if (id === 'mega-virada') return base; // Mega da Virada é fixa como solicitado
-      return dynamic ? { ...base, ...dynamic } : base;
+      if (!dynamic) return base;
+      return { ...base, ...dynamic };
   };
 
   const handleLogin = (newUser: User) => setUser(newUser);
@@ -128,7 +134,14 @@ const App: React.FC = () => {
           case 'dashboard': return <Dashboard user={user} onNavigate={handleNavigate} history={history} />;
           case 'lotteries':
               if (currentLotteryId) {
-                  return <LotteryDetail lotteryId={currentLotteryId} onBack={() => setCurrentLotteryId(null)} onSave={handleSaveBet} />;
+                  return (
+                    <LotteryDetail 
+                        lotteryId={currentLotteryId} 
+                        dynamicConfig={getLotteryConfig(currentLotteryId)}
+                        onBack={() => setCurrentLotteryId(null)} 
+                        onSave={handleSaveBet} 
+                    />
+                  );
               }
               return <LotteriesList onNavigate={handleNavigate} dynamicLotteries={dynamicLotteries} />;
           case 'turbo': return <TurboSystem data={turboData} />;
@@ -173,7 +186,6 @@ const App: React.FC = () => {
                 <div className="flex items-center gap-3">
                     <button onClick={() => setIsNotificationsOpen(true)} className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600">
                         <Bell size={22} />
-                        {/* BOLINHA VERMELHA PISCANTE PERMANENTE */}
                         <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse shadow-sm"></span>
                     </button>
                     <button onClick={() => handleNavigate('help')} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600">
