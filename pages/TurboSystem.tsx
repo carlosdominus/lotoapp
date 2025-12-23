@@ -17,7 +17,7 @@ const TurboSystem: React.FC<TurboSystemProps> = ({ data }) => {
         featured: {
             lottery: 'Mega da Virada',
             concurso: '3000',
-            prize: 'R$ 850 Milhões',
+            prize: 'R$ 1 Bilhão',
             probability: 99.8,
             numbers: [10, 25, 30, 42, 55, 60],
             reasons: [

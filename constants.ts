@@ -9,7 +9,7 @@ export const LOTTERIES: Record<string, LotteryConfig> = {
     icon: 'V',
     color: '#FFD700',
     nextDraw: '31/12',
-    prize: 'R$ 850.000.000',
+    prize: 'R$ 1 Bilhão',
     cost: 'R$ 6,00',
     numeros: { min: 1, max: 60, quantidade: 6 }
   },
@@ -31,7 +31,7 @@ export const LOTTERIES: Record<string, LotteryConfig> = {
     icon: 'L',
     color: '#930089',
     nextDraw: 'Hoje',
-    prize: 'R$ 1.800.000',
+    prize: 'R$ 7.000.000',
     cost: 'R$ 3,50',
     numeros: { min: 1, max: 25, quantidade: 15 }
   },
@@ -42,7 +42,7 @@ export const LOTTERIES: Record<string, LotteryConfig> = {
     icon: 'Q',
     color: '#260085',
     nextDraw: 'Hoje',
-    prize: 'R$ 600.000',
+    prize: 'R$ 10.000.000',
     cost: 'R$ 3,00',
     numeros: { min: 1, max: 80, quantidade: 5 }
   },
@@ -64,7 +64,7 @@ export const LOTTERIES: Record<string, LotteryConfig> = {
     icon: 'T',
     color: '#00A859',
     nextDraw: 'Hoje',
-    prize: 'R$ 61.000.000',
+    prize: 'R$ 72.000.000',
     cost: 'R$ 3,50',
     numeros: { min: 1, max: 80, quantidade: 10 }
   },
@@ -75,7 +75,7 @@ export const LOTTERIES: Record<string, LotteryConfig> = {
     icon: 'D',
     color: '#A61324',
     nextDraw: 'Amanhã',
-    prize: 'R$ 2.400.000',
+    prize: 'R$ 4.000.000',
     cost: 'R$ 3,00',
     numeros: { min: 1, max: 50, quantidade: 6 }
   },
@@ -86,7 +86,7 @@ export const LOTTERIES: Record<string, LotteryConfig> = {
     icon: 'D',
     color: '#CB8E00',
     nextDraw: 'Hoje',
-    prize: 'R$ 400.000',
+    prize: 'R$ 2.500.000',
     cost: 'R$ 2,50',
     numeros: { min: 1, max: 31, quantidade: 7 }
   },
@@ -97,7 +97,7 @@ export const LOTTERIES: Record<string, LotteryConfig> = {
     icon: 'S',
     color: '#BFDB38',
     nextDraw: 'Amanhã',
-    prize: 'R$ 300.000',
+    prize: 'R$ 100.000',
     cost: 'R$ 3,00',
     numeros: { colunas: 7, digitos: 10 }
   },
@@ -108,7 +108,7 @@ export const LOTTERIES: Record<string, LotteryConfig> = {
     icon: '+M',
     color: '#4B0082',
     nextDraw: 'Amanhã',
-    prize: 'R$ 11.000.000',
+    prize: 'R$ 14.000.000',
     cost: 'R$ 6,00',
     numeros: {
       principais: { min: 1, max: 50, quantidade: 6 },
