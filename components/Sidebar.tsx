@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, Ticket, Zap, Crown, History, X, LogOut, Bot, BookOpen, Calculator } from 'lucide-react';
+import { Home, Ticket, Zap, Crown, History, X, LogOut, Bot, BookOpen, Calculator, GraduationCap } from 'lucide-react';
 import { ASSETS } from '../constants';
 import { User } from '../types';
 
@@ -21,6 +21,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, currentPage, onNavig
         { id: 'turbo', label: 'Sistema Turbo', icon: Zap },
         { id: 'autopilot', label: 'Autopiloto', icon: Bot },
         { id: 'economy', label: 'Aposta Econômica', icon: Calculator },
+        { id: 'finance-course', label: 'Curso Finanças', icon: GraduationCap },
         { id: 'vip', label: 'Clube VIP', icon: Crown },
         { id: 'history', label: 'Histórico', icon: History },
     ];

@@ -13,6 +13,7 @@ import VipClub from './pages/VipClub';
 import History from './pages/History';
 import Autopilot from './pages/Autopilot';
 import EconomyBet from './pages/EconomyBet';
+import FinanceCourse from './pages/FinanceCourse';
 import Help from './pages/Help';
 import { ASSETS, LOTTERIES } from './constants';
 
@@ -133,6 +134,7 @@ const App: React.FC = () => {
           case 'turbo': return <TurboSystem data={turboData} />;
           case 'autopilot': return <Autopilot onSaveBatch={handleSaveBatchBets} />;
           case 'economy': return <EconomyBet history={history} />;
+          case 'finance-course': return <FinanceCourse />;
           case 'vip': return <VipClub />;
           case 'history': return <History history={history} onClear={() => setHistory([])} />;
           case 'help': return <Help />;
