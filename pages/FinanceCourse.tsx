@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { GraduationCap, PlayCircle, ChevronDown, ChevronUp, CheckCircle, ShieldCheck, Star } from 'lucide-react';
+import { GraduationCap, PlayCircle, ChevronDown, ChevronUp, CheckCircle, ShieldCheck, Star, Trophy } from 'lucide-react';
 
 interface Module {
     id: number;
@@ -66,107 +66,107 @@ const FinanceCourse: React.FC = () => {
     const progress = Math.round((completed.length / MODULES.length) * 100);
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500 pb-20">
-            {/* Hero Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight mb-2 flex items-center gap-3">
-                        <div className="p-2 bg-indigo-100 rounded-lg">
-                            <GraduationCap size={24} className="text-indigo-600" />
+        <div className="space-y-6 animate-in fade-in duration-500 pb-24">
+            {/* Header unificado sem a barra branca isolada */}
+            <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                    <div className="p-2.5 bg-indigo-600 rounded-2xl text-white shadow-lg shadow-indigo-200">
+                        <GraduationCap size={24} />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900 tracking-tight leading-tight">Educação Financeira VIP</h1>
+                        <p className="text-sm text-gray-500 font-medium">Domine seu dinheiro e jogue com maestria.</p>
+                    </div>
+                </div>
+
+                {/* Progress bar mais discreta e integrada */}
+                <div className="bg-white/40 backdrop-blur-sm p-4 rounded-3xl border border-white flex items-center justify-between gap-4">
+                    <div className="flex-1">
+                        <div className="flex justify-between items-center mb-1.5">
+                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Seu Progresso Atual</span>
+                            <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">{progress}% Concluído</span>
                         </div>
-                        Educação Financeira VIP
-                    </h1>
-                    <p className="text-gray-500 text-sm">Transforme sua relação com o dinheiro e jogue com maestria.</p>
-                </div>
-                <div className="bg-white px-4 py-2 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                    <div className="text-right">
-                        <p className="text-[10px] font-bold text-gray-400 uppercase">Seu Progresso</p>
-                        <p className="text-sm font-bold text-gray-900">{progress}% Concluído</p>
+                        <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                            <div 
+                                className="h-full bg-indigo-600 rounded-full transition-all duration-1000 ease-out"
+                                style={{ width: `${progress}%` }}
+                            ></div>
+                        </div>
                     </div>
-                    <div className="w-12 h-12 rounded-full border-4 border-gray-100 flex items-center justify-center relative">
-                        <svg className="absolute inset-0 w-12 h-12 -rotate-90">
-                            <circle
-                                cx="24"
-                                cy="24"
-                                r="20"
-                                stroke="#4f46e5"
-                                strokeWidth="4"
-                                fill="none"
-                                strokeDasharray="125.6"
-                                strokeDashoffset={125.6 - (125.6 * progress) / 100}
-                                strokeLinecap="round"
-                                className="transition-all duration-700 ease-in-out"
-                            />
-                        </svg>
-                        <span className="text-[10px] font-bold text-indigo-600">{completed.length}/5</span>
+                    <div className="shrink-0 w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center">
+                        <Trophy size={18} className="text-indigo-600" />
                     </div>
                 </div>
             </div>
 
-            {/* Introductory Card */}
-            <div className="bg-gradient-to-br from-indigo-600 to-blue-700 rounded-[32px] p-8 text-white shadow-xl shadow-indigo-200">
-                <div className="flex items-start gap-4 mb-4">
-                    <Star className="text-yellow-400 fill-yellow-400" size={24} />
-                    <h2 className="text-xl font-bold">Domine suas Finanças</h2>
-                </div>
-                <p className="text-indigo-50 leading-relaxed text-sm mb-6">
-                    A diferença entre um apostador comum e um ganhador profissional está na gestão. 
-                    Este curso exclusivo foi desenhado para que você tenha controle total sobre sua banca e sua vida financeira.
-                </p>
-                <div className="flex items-center gap-3 text-sm font-medium bg-white/10 w-fit px-4 py-2 rounded-full backdrop-blur-sm">
-                    <ShieldCheck size={18} /> Conteúdo Exclusivo Premium
+            {/* Banner de destaque */}
+            <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-[32px] p-6 text-white shadow-xl shadow-indigo-100 relative overflow-hidden">
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+                <div className="relative z-10">
+                    <div className="flex items-center gap-2 mb-3">
+                        <Star className="text-yellow-400 fill-yellow-400" size={18} />
+                        <span className="text-xs font-bold uppercase tracking-widest text-indigo-200">Conteúdo Premium</span>
+                    </div>
+                    <h2 className="text-lg font-bold mb-3 leading-snug">A diferença entre um apostador e um vencedor profissional está na gestão.</h2>
+                    <p className="text-indigo-100/80 text-xs leading-relaxed mb-0">
+                        Este treinamento foi desenhado para que você tenha controle total sobre sua banca e vida financeira.
+                    </p>
                 </div>
             </div>
 
-            {/* Modules List */}
-            <div className="space-y-4">
+            {/* Lista de Aulas */}
+            <div className="space-y-3">
+                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest px-2 mb-4">Cronograma de Aulas</h3>
                 {MODULES.map((module) => (
                     <div 
                         key={module.id} 
                         className={`bg-white rounded-[24px] border transition-all duration-300 overflow-hidden ${
-                            expandedId === module.id ? 'border-indigo-200 shadow-md ring-1 ring-indigo-50' : 'border-gray-100 shadow-sm hover:border-gray-200'
+                            expandedId === module.id ? 'border-indigo-200 shadow-lg ring-1 ring-indigo-50' : 'border-gray-100 shadow-sm hover:bg-gray-50/50'
                         }`}
                     >
                         <button 
                             onClick={() => toggleModule(module.id)}
-                            className="w-full p-5 flex items-center justify-between text-left group"
+                            className="w-full p-4 flex items-center justify-between text-left group"
                         >
-                            <div className="flex items-center gap-4">
-                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm transition-colors ${
-                                    completed.includes(module.id) ? 'bg-green-100 text-green-600' : 'bg-gray-50 text-gray-400 group-hover:bg-indigo-50 group-hover:text-indigo-600'
+                            <div className="flex items-center gap-3">
+                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs transition-colors ${
+                                    completed.includes(module.id) ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400 group-hover:bg-indigo-50 group-hover:text-indigo-600'
                                 }`}>
-                                    {completed.includes(module.id) ? <CheckCircle size={20} /> : module.id}
+                                    {completed.includes(module.id) ? <CheckCircle size={18} /> : module.id}
                                 </div>
                                 <div>
-                                    <h3 className={`font-bold transition-colors ${expandedId === module.id ? 'text-indigo-600' : 'text-gray-900'}`}>
+                                    <h3 className={`text-sm font-bold transition-colors ${expandedId === module.id ? 'text-indigo-600' : 'text-gray-900'}`}>
                                         {module.title}
                                     </h3>
-                                    <span className="text-[10px] text-gray-400 font-bold uppercase">Módulo Liberado</span>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                                        <span className="text-[10px] text-gray-400 font-bold uppercase">Módulo Liberado</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
                                 <div 
                                     onClick={(e) => toggleComplete(module.id, e)}
-                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all ${
+                                    className={`px-2.5 py-1.5 rounded-lg text-[9px] font-bold uppercase transition-all ${
                                         completed.includes(module.id) 
                                             ? 'bg-green-50 text-green-600' 
                                             : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
                                     }`}
                                 >
-                                    {completed.includes(module.id) ? 'Concluída' : 'Marcar como vista'}
+                                    {completed.includes(module.id) ? 'Concluída' : 'Marcar Vista'}
                                 </div>
-                                {expandedId === module.id ? <ChevronUp size={20} className="text-gray-400" /> : <ChevronDown size={20} className="text-gray-400" />}
+                                {expandedId === module.id ? <ChevronUp size={16} className="text-gray-400" /> : <ChevronDown size={16} className="text-gray-400" />}
                             </div>
                         </button>
 
                         {expandedId === module.id && (
-                            <div className="px-5 pb-5 animate-in slide-in-from-top-2 duration-300">
-                                <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+                            <div className="px-4 pb-5 animate-in slide-in-from-top-2 duration-300">
+                                <p className="text-xs text-gray-500 mb-4 leading-relaxed bg-gray-50 p-3 rounded-xl border border-gray-100">
                                     {module.description}
                                 </p>
                                 
                                 <div 
-                                    className={`rounded-2xl overflow-hidden bg-gray-900 shadow-2xl relative group mx-auto ${module.aspectRatio === "133.33%" ? 'max-w-[340px]' : 'w-full'}`}
+                                    className="rounded-2xl overflow-hidden bg-gray-900 shadow-2xl relative group mx-auto max-w-[340px]"
                                     style={{ position: 'relative', paddingTop: module.aspectRatio }}
                                 >
                                     <iframe 
@@ -178,12 +178,12 @@ const FinanceCourse: React.FC = () => {
                                     ></iframe>
                                 </div>
 
-                                <div className="mt-4 flex justify-end">
+                                <div className="mt-4 flex justify-center">
                                     <button 
                                         onClick={() => toggleComplete(module.id, { stopPropagation: () => {} } as any)}
-                                        className="text-xs font-bold text-indigo-600 flex items-center gap-2 hover:underline"
+                                        className="text-[10px] font-bold text-indigo-600 flex items-center gap-2 hover:bg-indigo-50 px-3 py-1.5 rounded-full transition-colors"
                                     >
-                                        <PlayCircle size={14} /> Reassistir aula
+                                        <PlayCircle size={14} /> Reassistir esta aula
                                     </button>
                                 </div>
                             </div>
@@ -192,9 +192,11 @@ const FinanceCourse: React.FC = () => {
                 ))}
             </div>
 
-            {/* Motivation Footer */}
-            <div className="py-10 text-center">
-                <p className="text-sm text-gray-400 italic">"O conhecimento é o único investimento que nunca perde valor."</p>
+            <div className="py-8 text-center">
+                <div className="inline-flex items-center gap-2 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                    <ShieldCheck size={14} className="text-indigo-400" />
+                    Ambiente de Aprendizado Seguro
+                </div>
             </div>
         </div>
     );

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { LOTTERIES } from '../constants';
 import { ArrowRight, Star, Trophy, Zap, Bot, BookOpen, PlayCircle, X, Ticket, History as HistoryIcon, ShieldCheck, Inbox } from 'lucide-react';
@@ -8,6 +7,7 @@ interface DashboardProps {
     user: { name: string };
     onNavigate: (page: string, params?: any) => void;
     history: SavedBet[];
+    dynamicLotteries?: any;
 }
 
 const BANNERS = [
@@ -25,8 +25,15 @@ const BANNERS = [
     }
 ];
 
-const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate, history }) => {
-    const recommended = { ...LOTTERIES['timemania'], prize: 'R$ 61 Milhões' };
+const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate, history, dynamicLotteries = {} }) => {
+    // Escolhe a Timemania como destaque do Turbo no Dashboard se não houver dados da API
+    const recommendedId = 'timemania';
+    const dynRecommended = dynamicLotteries[recommendedId] || {};
+    const recommended = { 
+        ...LOTTERIES[recommendedId], 
+        prize: dynRecommended.prize || LOTTERIES[recommendedId].prize 
+    };
+
     const [currentBanner, setCurrentBanner] = useState(0);
     const [showTutorialPopup, setShowTutorialPopup] = useState(false);
     const [showPersistentFAB, setShowPersistentFAB] = useState(false);
@@ -116,21 +123,26 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate, history }) => {
                     <button onClick={() => onNavigate('lotteries')} className="text-sm font-semibold text-loto-primary hover:opacity-80">Ver todas ({Object.keys(LOTTERIES).length}) →</button>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {Object.values(LOTTERIES).slice(0, 4).map((lottery) => (
-                        <button
-                            key={lottery.id}
-                            onClick={() => onNavigate('lotteries', { id: lottery.id })}
-                            className="bg-white p-5 rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100 hover:border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all text-left group h-full flex flex-col justify-between min-h-[160px]"
-                        >
-                            <div className="w-12 h-12 rounded-2xl mb-4 flex items-center justify-center text-white font-bold shadow-md transform group-hover:scale-110 transition-transform" style={{ backgroundColor: lottery.color }}>
-                                {lottery.icon}
-                            </div>
-                            <div>
-                                <h4 className="font-bold text-gray-900 group-hover:text-loto-primary transition-colors text-lg truncate">{lottery.name}</h4>
-                                <p className="text-sm font-semibold text-green-600 mt-1">{lottery.prize}</p>
-                            </div>
-                        </button>
-                    ))}
+                    {Object.values(LOTTERIES).slice(0, 4).map((lottery) => {
+                        const dyn = dynamicLotteries[lottery.id] || {};
+                        const displayPrize = dyn.prize || lottery.prize;
+                        
+                        return (
+                            <button
+                                key={lottery.id}
+                                onClick={() => onNavigate('lotteries', { id: lottery.id })}
+                                className="bg-white p-5 rounded-3xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100 hover:border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all text-left group h-full flex flex-col justify-between min-h-[160px]"
+                            >
+                                <div className="w-12 h-12 rounded-2xl mb-4 flex items-center justify-center text-white font-bold shadow-md transform group-hover:scale-110 transition-transform" style={{ backgroundColor: lottery.color }}>
+                                    {lottery.icon}
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-gray-900 group-hover:text-loto-primary transition-colors text-lg truncate">{lottery.name}</h4>
+                                    <p className="text-sm font-semibold text-green-600 mt-1">{displayPrize}</p>
+                                </div>
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 

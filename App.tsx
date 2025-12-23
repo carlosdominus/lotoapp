@@ -131,7 +131,7 @@ const App: React.FC = () => {
 
   const renderContent = () => {
       switch(currentPage) {
-          case 'dashboard': return <Dashboard user={user} onNavigate={handleNavigate} history={history} />;
+          case 'dashboard': return <Dashboard user={user} onNavigate={handleNavigate} history={history} dynamicLotteries={dynamicLotteries} />;
           case 'lotteries':
               if (currentLotteryId) {
                   return (
@@ -151,7 +151,7 @@ const App: React.FC = () => {
           case 'vip': return <VipClub />;
           case 'history': return <History history={history} onClear={() => setHistory([])} />;
           case 'help': return <Help />;
-          default: return <Dashboard user={user} onNavigate={handleNavigate} history={history} />;
+          default: return <Dashboard user={user} onNavigate={handleNavigate} history={history} dynamicLotteries={dynamicLotteries} />;
       }
   };
 
@@ -194,15 +194,15 @@ const App: React.FC = () => {
                 </div>
             </header>
 
-            <main ref={scrollContainerRef} className="flex-1 overflow-y-auto no-scrollbar pt-[72px] lg:pt-0">
+            <main ref={scrollContainerRef} className="flex-1 overflow-y-auto no-scrollbar pt-[72px] lg:pt-0 bg-[#F5F7FA]">
                 <div className="max-w-3xl mx-auto w-full p-6 md:p-8 lg:p-10">
                     {currentPage !== 'dashboard' && !currentLotteryId && (
                         <button 
                             onClick={() => handleNavigate('dashboard')}
-                            className="flex items-center gap-2 text-gray-500 hover:text-loto-primary font-bold mb-6 transition-colors active:scale-95 bg-white/50 px-4 py-2 rounded-xl border border-gray-100 shadow-sm w-fit"
+                            className="flex items-center gap-2 text-gray-400 hover:text-loto-primary font-bold mb-6 transition-all active:scale-95 group px-1"
                         >
-                            <ArrowLeft size={18} />
-                            Voltar ao Início
+                            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                            <span className="text-sm">Voltar ao Início</span>
                         </button>
                     )}
                     {renderContent()}
